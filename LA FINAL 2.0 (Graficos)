@@ -1,0 +1,111 @@
+# -*- coding: utf-8 -*-
+
+import sys
+import random
+
+if sys.version_info < (3, 0):
+    from Tkinter import Tk, Label, Radiobutton, PhotoImage, IntVar
+    import tkMessageBox as messagebox
+else:
+    from tkinter import Tk, Label, Radiobutton, PhotoImage, IntVar
+    from tkinter import messagebox
+
+
+class JuegoPosiciones:
+    def __init__(self, parent):
+        self.imagen_fondo = PhotoImage(file="arco_fondo.png")
+        self.imagen_posiciones = PhotoImage(file="pelota_fondo.png")
+
+        self.ancho_posiciones = 120
+        self.alto_posiciones = 128
+        self.container = parent
+
+        self.posiciones = []
+        self.result = ""
+
+        self.ocupar_posiciones()
+
+        self.setup()
+
+    def ocupar_posiciones(self):
+        posibilidad = ['GOOOL', 'Atajado por el arquero', 'Se va afuera']
+        while len(self.posiciones) < 5:
+            computer_choice = random.choice(posibilidad)
+            self.posiciones.append(computer_choice)
+        print("La pelota sale disparada:", self.posiciones)
+
+    def entrar_posiciones(self, numero_posiciones):
+        print("Vuela hacia el arco #:", numero_posiciones)
+        ocupante_posiciones = self.posiciones[numero_posiciones-1]
+        print("Y...: ", ocupante_posiciones)
+
+        if ocupante_posiciones == 'GOOOL':
+            self.result = "El remate va a toda velocidad \n"
+            self.result += "Golazo... eres campeon del mundo"
+        elif ocupante_posiciones == 'Atajado por el arquero':
+            self.result = "El arquero atajo tu disparo \n" 
+            self.result += "Y en una contra magistral te ganan el partido"
+        else:
+            self.result = "Tu disparo se ha ido fuera... \n" 
+            self.result += "Pero al minuto tienes otra posibilidad y ganas el partido"
+
+        self.anunciar_ganador(self.result)
+
+    def crear_widgets(self):
+
+        self.var = IntVar()
+        self.background_label = Label(self.container,
+                                      image=self.imagen_fondo)
+        txt = "Final del mundo / Selecciona la posicion a donde quieres patear\n"
+        txt += "Haz un gol para ganar"
+        self.info_label = Label(self.container, text=txt, bg='white')
+
+        # Creamos un dicionario con las opciones para las imagenes de las posiciones
+        
+        r_btn_config = {'variable': self.var,
+                        'bg': '#f1f2ed',
+                        'activebackground': 'white',
+                        'image': self.imagen_posiciones,
+                        'height': self.alto_posiciones,
+                        'width': self.ancho_posiciones,
+                        'command': self.radio_btn_pressed}
+
+        self.r1 = Radiobutton(self.container, r_btn_config, value=1)
+        self.r2 = Radiobutton(self.container, r_btn_config, value=2)
+        self.r3 = Radiobutton(self.container, r_btn_config, value=3)
+        self.r4 = Radiobutton(self.container, r_btn_config, value=4)
+        self.r5 = Radiobutton(self.container, r_btn_config, value=5)
+
+    def setup(self):
+        self.crear_widgets()
+        self.setup_layout()
+
+    def setup_layout(self):
+        self.container.grid_rowconfigure(1, weight=1)
+        self.container.grid_columnconfigure(0, weight=1)
+        self.container.grid_columnconfigure(4, weight=1)
+        self.background_label.place(x=0, y=0, relwidth=1, relheight=1)
+        self.info_label.grid(row=0, column=0, columnspan=5, sticky='nsew')
+        self.r1.grid(row=1, column=0)
+        self.r2.grid(row=1, column=2)
+        self.r3.grid(row=1, column=4)
+        self.r4.grid(row=2, column=0)
+        self.r5.grid(row=2, column=4)
+
+    def anunciar_ganador(self, data):
+        messagebox.showinfo("¡Atención!", message=data)
+
+    # Handle Events
+    def radio_btn_pressed(self):
+        self.entrar_posiciones(self.var.get())
+
+if __name__ == "__main__":
+
+    mainwin = Tk()
+    WIDTH = 1280
+    HEIGHT = 600
+    mainwin.geometry("%sx%s" % (WIDTH, HEIGHT))
+    mainwin.resizable(0, 0)
+    mainwin.title("LA FINAL 2 - El Videojuego")
+    game_app = JuegoPosiciones(mainwin)
+    mainwin.mainloop()
