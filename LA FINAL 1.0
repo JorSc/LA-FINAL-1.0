@@ -1,0 +1,63 @@
+# -*- coding: utf-8 -*-
+
+import random
+import textwrap
+
+if __name__ == '__main__':
+    seguir_jugando = 1
+    posibilidades = ['Goooool','Atajado por el arquero','Se va afuera']
+    ancho_linea = 72
+    linea_punteada = ancho_linea * '-'
+    print(linea_punteada)
+    print("\033[1m"+ "LA FINAL" + "\033[0m")
+
+    msg = ("Se define el mundial, "
+          "estan empatados 1 a 1. "
+          "Acabas de entrar " 
+          "y eres el 9 del equipo, "
+          "hay mucha esperanza en ti... "
+          "y a la vez mucha presion."
+          " Todo sucede muy rapido, de pronto "
+          "han cobrado penal a favor para tu seleccion. "
+          "Eres el elegido para patear ... "
+          "Te acercas y te dispones a disparar..."
+          " ES AHORA O NUNCA")
+    
+    print(textwrap.fill(msg, width = ancho_linea))
+    print("Misión:")
+    print("Elige en cual de los 5 sectores del arco pateareas")
+    print("1 Derecha Abajo / 2 Izquierda Abajo / 3 Derecha Arriba / 4 Izquierda Arriba / 5 Centro")
+    print("Nota:")
+    print("¡Cuidado! El arquero rival te tiene bien estudiado")
+    print(linea_punteada)
+
+    while seguir_jugando == 1:
+        posiciones = []
+        while len(posiciones) < 5: 
+            eleccion_aleatoria = random.choice(posibilidades)
+            posiciones.append(eleccion_aleatoria)
+
+        msg =  "Elige a que posicion patearas: " 
+        decision_usuario = input("\n"+msg)
+        idx = int(decision_usuario)
+
+        print("La pelota sale disparada...")
+        msg=""
+
+        for i in range(len(posiciones)):
+            ubic_info = "<%d:%s>"%(i+1, posiciones[i])
+            if i+1 == idx:
+                ubic_info = ubic_info
+            msg += ubic_info + " "
+        print("\033[1m" + "\t" + msg + "\033[0m")
+        print(linea_punteada)
+        print("La pelota va a la posicion %d..." %idx)
+
+        if posiciones[idx-1] == 'Atajado por el arquero':
+            print("Atajo el arquero... se esta por cumplir el tiempo y el equipo rival en una jugada magistral gana el partido")
+        elif posiciones[idx-1] == 'Se va afuera':
+            print("El remate sale fuera del campo... has fallado pero al minuto tienes una nueva chance y haces el gol de la victoria")
+        else:
+            print("¡GOOOOOOL! has hecho el gol de la victoria y te has convertido en campeon e idolo mundial")
+        print(linea_punteada)
+        seguir_jugando == input("¿Quieres jugar de nuevo? Si(1)/No(0): ")
